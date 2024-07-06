@@ -4,6 +4,9 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import difflib
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 
 
 movies = pd.read_csv('movies.csv')
@@ -90,3 +93,39 @@ for movie in sorted_similar_movies:
     print(i, '.',title_from_index)
     i+=1
 
+##############################################################################
+# Get the top 10 recommended movies
+top_n = 10
+top_movies = sorted_similar_movies[:top_n]
+
+# Extract movie titles and similarity scores
+titles = [movies.iloc[movie[0]]['title'] for movie in top_movies]
+scores = [movie[1] for movie in top_movies]
+
+# Plot the bar chart
+plt.figure(figsize=(10, 6))
+plt.barh(titles, scores, color='skyblue')
+plt.xlabel('Similarity Score')
+plt.title('Top 10 Movie Recommendations')
+plt.gca().invert_yaxis()
+plt.show()
+
+#####################################################################################################
+#heatmap
+# Reduce the size of the similarity matrix for visualization purposes
+reduced_similarity = similarity[:100, :100]
+
+# Plot the heatmap
+plt.figure(figsize=(12, 10))
+sns.heatmap(reduced_similarity, cmap='coolwarm', xticklabels=False, yticklabels=False)
+plt.title('Similarity Matrix Heatmap (First 100 Movies)')
+plt.show()
+########################################################################################################
+
+# Plot the scatter plot
+plt.figure(figsize=(10, 6))
+plt.scatter(range(len(sorted_similar_movies)), [score[1] for score in sorted_similar_movies], alpha=0.6)
+plt.xlabel('Movies')
+plt.ylabel('Similarity Score')
+plt.title('Similarity Score Distribution')
+plt.show()
